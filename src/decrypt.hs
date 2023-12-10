@@ -1,6 +1,8 @@
+module Decrypt (isEncrypted) where
+
 import           System.Directory
+import           System.IO
 import           System.Process
-import System.IO
 
 type Password = String
 
@@ -17,5 +19,5 @@ isEncrypted path = do
         then do
             (_, Just hout, _, _) <- createProcess (proc "exiftool" ["-s", "-T", "-Encrypted", path]) { std_out = CreatePipe }
             out <- hGetContents hout
-            return $ (length out > 1, Just hout)
+            return (length out > 1, Just hout)
         else return (False, Nothing)
