@@ -4,8 +4,6 @@ import           System.Directory
 import           System.IO
 import           System.Process
 
-type Password = String
-
 -- >>> isEncrypted "invailde/path/to/file.pdf"
 -- (False, Nothing)
 --
