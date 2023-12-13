@@ -61,5 +61,4 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - pdf-decrypter
     - hspec
