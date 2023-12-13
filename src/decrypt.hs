@@ -6,14 +6,14 @@ module Decrypt
 import           System.Directory
 import           System.IO
 import           System.Process
+import Data.Char (toLower)
+import Data.List (isSuffixOf)
 
 -- >>> isPDF "test.pdf"
 -- True
 
 isPDF :: String -> Bool
-isPDF str
-    | str `elem` [".pdf", ".PDF"] = True
-    | otherwise = False
+isPDF s = ".pdf" `isSuffixOf` map toLower s
 
 -- >>> isEncrypted "invailde/path/to/file.pdf"
 -- (False, Nothing)
@@ -22,9 +22,8 @@ isPDF str
 isEncrypted :: String -> IO (Bool, Maybe Handle)
 isEncrypted "" = return (False, Nothing)
 isEncrypted path = do
-    current <- doesPathExist path
-    exist <- doesFileExist path
-    if current && exist
+    current <- doesFileExist path
+    if isPDF path && current
         then do
             (_, Just hout, _, _) <- createProcess (proc "exiftool" ["-s", "-T", "-Encrypted", path]) { std_out = CreatePipe }
             out <- hGetContents hout
