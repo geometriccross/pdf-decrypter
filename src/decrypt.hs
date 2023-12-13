@@ -1,14 +1,25 @@
-module Decrypt (isEncrypted) where
+module Decrypt 
+    (   isPDF, 
+        isEncrypted
+    ) where
 
 import           System.Directory
 import           System.IO
 import           System.Process
 
+-- >>> isPDF "test.pdf"
+-- True
+
+isPDF :: String -> Bool
+isPDF str
+    | str `elem` [".pdf", ".PDF"] = True
+    | otherwise = False
+
 -- >>> isEncrypted "invailde/path/to/file.pdf"
 -- (False, Nothing)
 --
 
-isEncrypted :: FilePath -> IO (Bool, Maybe Handle)
+isEncrypted :: String -> IO (Bool, Maybe Handle)
 isEncrypted "" = return (False, Nothing)
 isEncrypted path = do
     current <- doesPathExist path
