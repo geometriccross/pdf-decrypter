@@ -28,5 +28,5 @@ isEncrypted path = do
             if length out > 3 -- この数は、'-'と改行文字'\n'と合わせたもの
                 then return (True, Just hout)
                 else return (False, Nothing)
-        else
-            return (False, Nothing)
+        else return (False, Nothing)
+
