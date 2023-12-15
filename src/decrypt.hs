@@ -8,6 +8,7 @@ import           Data.List        (isSuffixOf)
 import           System.Directory
 import           System.IO
 import           System.Process
+import System.FilePath (takeBaseName)
 
 -- >>> isPDF "test.pdf"
 -- True
@@ -30,4 +31,7 @@ isEncrypted path = do
                 then return Just hout
                 else return Nothing
         else return Nothing
+
+suffixChange :: FilePath -> String -> FilePath
+suffixChange path suffix = takeBaseName . (++ suffix) $ path
 
