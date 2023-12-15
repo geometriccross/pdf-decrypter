@@ -2,24 +2,29 @@ module DecryptSpec (spec) where
 
 import Test.Hspec ( describe, it, shouldReturn, Spec, shouldBe )
 import Decrypt ( isPDF, isEncrypted )
+import Data.Maybe (Maybe(Nothing))
+import Data.Bool (Bool(True))
 
 
 spec :: Spec
 spec = do
     describe "isPDF" $ do
-        it "pdfの場合" $ do
-            isPDF "test.pdf" `shouldBe` True
-
-    describe "isEncrypted" $ do
         it "存在しないパスの場合" $ do
-            isEncrypted "invailde/path/to/file.pdf" `shouldReturn` (False, Nothing)
+            isPDF "invailde/path/to/file.pdf" `shouldReturn` False
 
         it "パスでない文字列を渡した場合" $ do
-            isEncrypted "test" `shouldReturn` (False, Nothing)
+            isPDF "test" `shouldReturn` False
 
         it "pdfでない場合" $ do
-            isEncrypted "test/decryptSpec.hs" `shouldReturn` (False, Nothing)
-        
+            isPDF "test/decryptSpec.hs" `shouldReturn` False
+
+        it "pdfの場合" $ do
+            isPDF "test/test_data/normal.pdf" `shouldReturn` True
+
+    describe "isEncrypted" $ do
+        it "暗号化されていないpdfの場合" $ do
+            isEncrypted "test/test_data/normal.pdf" `shouldReturn` (False, Nothing)
+
         it "暗号化されたpdfの場合" $ do
-            result <- isEncrypted "test/test_data/geka05.pdf"
-            fst result `shouldBe` True
+            r <- isEncrypted "test/test_data/encrypted.pdf"
+            fst r `shouldBe` True

@@ -1,31 +1,32 @@
-module Decrypt 
-    (   isPDF, 
+module Decrypt
+    (   isPDF,
         isEncrypted
     ) where
 
+import           Data.Char        (toLower)
+import           Data.List        (isSuffixOf)
 import           System.Directory
 import           System.IO
 import           System.Process
-import Data.Char (toLower)
-import Data.List (isSuffixOf)
 
 -- >>> isPDF "test.pdf"
 -- True
 
-isPDF :: String -> Bool
-isPDF s = ".pdf" `isSuffixOf` map toLower s
+isPDF :: String -> IO Bool
+isPDF "" = return False
+isPDF path = do
+    r <- (&&) <$> doesPathExist path <*> doesFileExist path
+    return $ r && ".pdf" `isSuffixOf` map toLower path
 
--- >>> isEncrypted "invailde/path/to/file.pdf"
--- (False, Nothing)
---
-
-isEncrypted :: String -> IO (Bool, Maybe Handle)
 isEncrypted "" = return (False, Nothing)
 isEncrypted path = do
-    current <- doesFileExist path
-    if isPDF path && current
+    current <- isPDF path
+    if current
         then do
-            (_, Just hout, _, _) <- createProcess (proc "exiftool" ["-s", "-T", "-Encrypted", path]) { std_out = CreatePipe }
+            (_, Just hout, _, _) <- createProcess (proc "exiftool" ["-s", "-T", "-Encryption", path]) { std_out = CreatePipe }
             out <- hGetContents hout
-            return (length out > 1, Just hout)
-        else return (False, Nothing)
+            if length out > 3 -- この数は、'-'と改行文字'\n'と合わせたもの
+                then return (True, Just hout)
+                else return (False, Nothing)
+        else
+            return (False, Nothing)
