@@ -18,7 +18,8 @@ isPDF path = do
     r <- (&&) <$> doesPathExist path <*> doesFileExist path
     return $ r && ".pdf" `isSuffixOf` map toLower path
 
-isEncrypted "" = return (False, Nothing)
+isEncrypted :: String -> Maybe IO Handle
+isEncrypted "" = return Nothing
 isEncrypted path = do
     current <- isPDF path
     if current
@@ -26,7 +27,7 @@ isEncrypted path = do
             (_, Just hout, _, _) <- createProcess (proc "exiftool" ["-s", "-T", "-Encryption", path]) { std_out = CreatePipe }
             out <- hGetContents hout
             if length out > 3 -- この数は、'-'と改行文字'\n'と合わせたもの
-                then return (True, Just hout)
-                else return (False, Nothing)
-        else return (False, Nothing)
+                then return Just hout
+                else return Nothing
+        else return Nothing
 
