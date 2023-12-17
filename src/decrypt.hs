@@ -19,8 +19,8 @@ isPDF path = do
     r <- (&&) <$> doesPathExist path <*> doesFileExist path
     return $ r && ".pdf" `isSuffixOf` map toLower path
 
-isEncrypted :: FilePath -> IO (Maybe FilePath)
-isEncrypted "" = return Nothing
+isEncrypted :: FilePath -> IO Bool
+isEncrypted "" = return False
 isEncrypted path = do
     current <- isPDF path
     if current
@@ -28,9 +28,9 @@ isEncrypted path = do
             (_, Just hout, _, _) <- createProcess (proc "exiftool" ["-s", "-T", "-Encryption", path]) { std_out = CreatePipe }
             out <- hGetContents hout
             if length out > 3 -- この数は、'-'と改行文字'\n'と合わせたもの
-                then return $ Just path
-                else return Nothing
-        else return Nothing
+                then return True
+                else return False
+        else return False
 
 suffixChange :: FilePath -> String -> FilePath
 suffixChange path suffix = takeBaseName . (++ "." ++ suffix) $ path

@@ -23,7 +23,8 @@ spec = do
 
     describe "isEncrypted" $ do
         it "暗号化されていないpdfの場合" $ do
-            isEncrypted "test/test_data/normal.pdf" `shouldReturn` Nothing
+            isEncrypted "test/test_data/normal.pdf" `shouldReturn` False
 
         it "暗号化されたpdfの場合" $ do
-            isEncrypted "test/test_data/encrypted.pdf" `shouldNotReturn` Nothing
+            isEncrypted "test/test_data/encrypted.pdf" `shouldReturn` True
+        
