@@ -1,9 +1,10 @@
 module DecryptSpec (spec) where
 
 import Test.Hspec ( describe, it, shouldReturn, Spec, shouldBe )
-import Decrypt ( isPDF, isEncrypted )
+import Decrypt ( isPDF, isEncrypted, decrypt )
 import Data.Maybe (Maybe(Nothing))
-import Data.Bool (Bool(True))
+import Data.Bool (Bool(True, False))
+import System.Directory (copyFile)
 
 
 spec :: Spec
@@ -28,3 +29,13 @@ spec = do
         it "暗号化されたpdfの場合" $ do
             isEncrypted "test/test_data/encrypted.pdf" `shouldReturn` True
         
+    describe "decrypt" $ do
+        it "パスワードが間違っている場合" $ do
+            decrypt "test/test_data/encrypted.pdf" ["wrong"]
+            isEncrypted "test/test_data/encrypted.pdf" `shouldReturn` True
+
+        it "パスワードが正しい場合" $ do
+            let copy_path = "test/test_data/encrypted_copy.pdf"
+            copyFile "test/test_data/encrypted.pdf" copy_path
+            decrypt copy_path ["password"]
+            isEncrypted copy_path `shouldReturn` Nothing

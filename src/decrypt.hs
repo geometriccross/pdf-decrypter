@@ -1,6 +1,7 @@
 module Decrypt
     (   isPDF,
-        isEncrypted
+        isEncrypted,
+        decrypt
     ) where
 
 import           Data.Char        (toLower)
@@ -35,9 +36,9 @@ isEncrypted path = do
 suffixChange :: FilePath -> String -> FilePath
 suffixChange path suffix = takeBaseName . (++ "." ++ suffix) $ path
 
-decrypt :: FilePath -> [String] -> IO (Maybe FilePath)
-decrypt "" _ = return Nothing
-decrypt _ [] = return Nothing
+decrypt :: FilePath -> [String] -> IO ()
+decrypt "" _ = return ()
+decrypt _ [] = return ()
 decrypt path (p:px) = do
     let process = proc "qpdf" ["--decrypt", path, suffixChange path "temp", "--password=" ++ p]
     (_, Just hout, _, _) <- createProcess process { std_out = CreatePipe }
@@ -46,5 +47,4 @@ decrypt path (p:px) = do
         then do
             removeFile path
             renameFile (suffixChange path "temp") path
-            return $ Just path
         else decrypt path px
