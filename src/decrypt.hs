@@ -36,10 +36,15 @@ suffixChange :: FilePath -> String -> FilePath
 suffixChange path suffix = takeBaseName . (++ "." ++ suffix) $ path
 
 decrypt :: FilePath -> [String] -> IO (Maybe FilePath)
+decrypt "" _ = return Nothing
+decrypt _ [] = return Nothing
 decrypt path (p:px) = do
     let process = proc "qpdf" ["--decrypt", path, suffixChange path "temp", "--password=" ++ p]
-    (_, Just hout, _, _) <- createProcess (process) { std_out = CreatePipe }
+    (_, Just hout, _, _) <- createProcess process { std_out = CreatePipe }
     out <- hGetContents hout
     if length out > 2
-        then 
+        then do
+            removeFile path
+            renameFile (suffixChange path "temp") path
+            return $ Just path
         else decrypt path px
