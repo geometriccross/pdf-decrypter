@@ -33,18 +33,14 @@ isEncrypted path = do
                 else return False
         else return False
 
-suffixChange :: FilePath -> String -> FilePath
-suffixChange path suffix = takeBaseName . (++ "." ++ suffix) $ path
-
-decrypt :: FilePath -> [String] -> IO ()
-decrypt "" _ = return ()
-decrypt _ [] = return ()
-decrypt path (p:px) = do
-    let process = proc "qpdf" ["--decrypt", path, suffixChange path "temp", "--password=" ++ p]
+decrypt :: FilePath -> FilePath -> [String] -> IO ()
+decrypt "" _ _ = return ()
+decrypt _ "" _ = return ()
+decrypt _ _ [] = return ()
+decrypt input_path out_path (p:px) = do
+    let process = proc "qpdf" ["--decrypt", input_path, out_path, "--password=" ++ p]
     (_, Just hout, _, _) <- createProcess process { std_out = CreatePipe }
     out <- hGetContents hout
     if length out > 2
-        then do
-            removeFile path
-            renameFile (suffixChange path "temp") path
-        else decrypt path px
+        then return ()
+        else decrypt input_path out_path px

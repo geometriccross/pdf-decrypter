@@ -31,11 +31,11 @@ spec = do
         
     describe "decrypt" $ do
         it "パスワードが間違っている場合" $ do
-            decrypt "test/test_data/encrypted.pdf" ["wrong"]
+            decrypt "test/test_data/encrypted.pdf" "test/test_data/out.pdf" ["wrong"]
             isEncrypted "test/test_data/encrypted.pdf" `shouldReturn` True
 
         it "パスワードが正しい場合" $ do
-            let copy_path = "test/test_data/encrypted_copy.pdf"
-            copyFile "test/test_data/encrypted.pdf" copy_path
-            decrypt copy_path ["password"]
-            isEncrypted copy_path `shouldReturn` Nothing
+            let out_path = "test/test_data/out.pdf"
+            decrypt "test/test_data/encrypted.pdf" out_path ["password"]
+            isEncrypted out_path `shouldReturn` False
+            removeFile out_path
