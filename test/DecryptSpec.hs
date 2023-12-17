@@ -1,11 +1,8 @@
 module DecryptSpec (spec) where
 
-import Test.Hspec ( describe, it, shouldReturn, Spec, shouldBe )
-import Decrypt ( isPDF, isEncrypted, decrypt )
-import Data.Maybe (Maybe(Nothing))
-import Data.Bool (Bool(True, False))
-import System.Directory (copyFile)
-
+import           Decrypt          (decrypt, isEncrypted, isPDF)
+import           System.Directory (removeFile)
+import           Test.Hspec       (Spec, describe, it, shouldReturn)
 
 spec :: Spec
 spec = do
@@ -28,7 +25,7 @@ spec = do
 
         it "暗号化されたpdfの場合" $ do
             isEncrypted "test/test_data/encrypted.pdf" `shouldReturn` True
-        
+
     describe "decrypt" $ do
         it "パスワードが間違っている場合" $ do
             decrypt "test/test_data/encrypted.pdf" "test/test_data/out.pdf" ["wrong"]

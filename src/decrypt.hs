@@ -9,12 +9,9 @@ import           Data.List        (isSuffixOf)
 import           System.Directory
 import           System.IO
 import           System.Process
-import System.FilePath (takeBaseName)
 
--- >>> isPDF "test.pdf"
--- True
 
-isPDF :: String -> IO Bool
+isPDF :: FilePath -> IO Bool
 isPDF "" = return False
 isPDF path = do
     r <- (&&) <$> doesPathExist path <*> doesFileExist path
