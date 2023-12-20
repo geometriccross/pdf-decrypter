@@ -24,7 +24,7 @@ source-repository head
   location: https://github.com/githubuser/pdf-decrypter
 
 library
-exposed-modules:
+  exposed-modules:
       Decrypt
       PathHandle
   other-modules:
