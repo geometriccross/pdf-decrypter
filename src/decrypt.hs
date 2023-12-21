@@ -9,7 +9,6 @@ import           Data.List        (isSuffixOf)
 import           System.Directory
 import           System.IO
 import           System.Process
-import Control.Applicative (Applicative(liftA2))
 
 
 isPDF :: FilePath -> IO Bool
