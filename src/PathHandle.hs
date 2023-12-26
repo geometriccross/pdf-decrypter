@@ -1,15 +1,18 @@
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+{-# LANGUAGE LambdaCase #-}
 
 module PathHandle ( getPath ) where
 
 import           Control.Monad    (filterM)
 import           Data.Foldable    (fold)
-import           System.Directory (doesDirectoryExist, listDirectory, doesFileExist, getDirectoryContents)
-import           System.IO.Unsafe (unsafeInterleaveIO)
+import           System.Directory (doesDirectoryExist, getDirectoryContents,
+                                   listDirectory)
 import           System.FilePath
+import           System.IO.Unsafe (unsafeInterleaveIO)
 
 hasFile :: FilePath -> IO Bool
-hasFile path = not . null <$> getDirectoryContents path
+hasFile path = doesDirectoryExist path >>= \case
+    True -> fmap (not . any (`notElem` [".", ".."])) (getDirectoryContents path)
+    False -> return False
 
 getPath :: (FilePath -> IO Bool) -- ^ Filepath filter
                     -> FilePath
