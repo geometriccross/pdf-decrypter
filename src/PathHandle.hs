@@ -4,9 +4,12 @@ module PathHandle ( getPath ) where
 
 import           Control.Monad    (filterM)
 import           Data.Foldable    (fold)
-import           System.Directory (doesDirectoryExist, listDirectory)
+import           System.Directory (doesDirectoryExist, listDirectory, doesFileExist, getDirectoryContents)
 import           System.IO.Unsafe (unsafeInterleaveIO)
 import           System.FilePath
+
+hasFile :: FilePath -> IO Bool
+hasFile path = not . null <$> getDirectoryContents path
 
 getPath :: (FilePath -> IO Bool) -- ^ Filepath filter
                     -> FilePath
