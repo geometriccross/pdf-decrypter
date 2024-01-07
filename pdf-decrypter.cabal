@@ -25,7 +25,8 @@ source-repository head
 
 library
   exposed-modules:
-      Decrypt
+      ArgumentsParser
+      PathHandle
   other-modules:
       Paths_pdf_decrypter
   autogen-modules:
@@ -37,7 +38,9 @@ library
       base >=4.7 && <5
     , directory
     , filepath
+    , free
     , process
+    , sqlite-simple
   default-language: Haskell2010
 
 executable pdf-decrypter-exe
@@ -53,8 +56,10 @@ executable pdf-decrypter-exe
       base >=4.7 && <5
     , directory
     , filepath
+    , free
     , pdf-decrypter
     , process
+    , sqlite-simple
   default-language: Haskell2010
 
 test-suite pdf-decrypter-test
@@ -62,7 +67,8 @@ test-suite pdf-decrypter-test
   main-is: Spec.hs
   other-modules:
       DecryptSpec
-      Decrypt
+      ArgumentsParser
+      PathHandle
       Paths_pdf_decrypter
   autogen-modules:
       Paths_pdf_decrypter
@@ -74,6 +80,8 @@ test-suite pdf-decrypter-test
       base >=4.7 && <5
     , directory
     , filepath
+    , free
     , hspec
     , process
+    , sqlite-simple
   default-language: Haskell2010

@@ -24,7 +24,8 @@ dependencies:
 - filepath
 - directory
 - process
-
+- sqlite-simple
+- free
 ghc-options:
 - -Wall
 - -Wcompat
