@@ -1,6 +1,6 @@
 module Decrypt
     (   isPDF,
-        isEncrypted,
+        checkFileInfo,
         decrypt
     ) where
 
@@ -17,17 +17,15 @@ isPDF path = do
     r <- (&&) <$> doesPathExist path <*> doesFileExist path
     return $ r && ".pdf" `isSuffixOf` map toLower path
 
-isEncrypted :: FilePath -> IO Bool
-isEncrypted "" = return False
-isEncrypted path = do
+checkFileInfo :: FilePath -> String -> IO Bool
+checkFileInfo "" _ = return False
+checkFileInfo path arg = do
     current <- isPDF path
     if current
         then do
-            (_, Just hout, _, _) <- createProcess (proc "exiftool" ["-s", "-T", "-Encryption", path]) { std_out = CreatePipe }
+            (_, Just hout, _, _) <- createProcess (proc "exiftool" ["-s", "-T", arg, path]) { std_out = CreatePipe }
             out <- hGetContents hout
-            if length out > 3 -- この数は、'-'と改行文字'\n'と合わせたもの
-                then return True
-                else return False
+            return $ length out > 3 -- この数は、'-'と改行文字'\n'と合わせたもの
         else return False
 
 decrypt :: FilePath -> FilePath -> [String] -> IO ()
